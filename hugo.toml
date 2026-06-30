@@ -1,0 +1,31 @@
+baseURL = "https://go-ruby-cgi.github.io/"
+title = "go-ruby-cgi"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[params.phases]]
+  name = "Escape / Unescape"
+  status = "ready"
+  blurb = "`application/x-www-form-urlencoded`: every byte outside the unreserved set `A–Z a–z 0–9 - . _ ~` is percent-encoded (uppercase hex), a space becomes `+`, and `Unescape` decodes `+`→space and `%XX`, leaving malformed escapes verbatim — it never raises."
+[[params.phases]]
+  name = "EscapeURIComponent / UnescapeURIComponent"
+  status = "ready"
+  blurb = "Like the form encoders but a space is `%20` (and `Unescape` does not treat `+` as a space) — `CGI.escapeURIComponent` / `CGI.unescapeURIComponent`."
+[[params.phases]]
+  name = "EscapeHTML / UnescapeHTML"
+  status = "ready"
+  blurb = "Encodes `& < > \" '` (the apostrophe as `&#39;`); decoding recognises those five names plus `&apos;`, decimal `&#NN;` and hex `&#xHH;` / `&#XHH;` numeric entities (emitting raw UTF-8 bytes, surrogates included, exactly as MRI does), rejecting unknown or overflowing entities verbatim."
+[[params.phases]]
+  name = "EscapeElement / UnescapeElement"
+  status = "ready"
+  blurb = "HTML-(un)escape only the start/end tags of named elements, matching the element name case-insensitively at a word boundary — `CGI.escapeElement` / `CGI.unescapeElement`."
+[[params.phases]]
+  name = "ParseQuery"
+  status = "ready"
+  blurb = "`CGI.parse`: split on `&` and `;`, form-decode keys and values, accumulate repeated keys, and return an empty slice for a bare key. (In MRI 4.0 `CGI.parse` ships in the separate `cgi` gem.)"
+[[params.phases]]
+  name = "Differential oracle & coverage"
+  status = "ready"
+  blurb = "Deterministic golden tests (which alone hold coverage at 100%) plus a differential oracle: a corpus run through the system `ruby` (`CGI.escape`, `CGI.unescapeHTML`, `CGI.parse`, …) and compared byte-for-byte; 100% coverage, gofmt + go vet clean, green across all six 64-bit Go arches and three OSes."
